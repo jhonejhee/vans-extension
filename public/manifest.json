@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "VANS",
+  "version": "1.0",
+  "description": "A voice activated navigation system.",
+  "permissions": ["notifications", "storage", "activeTab", "tabs", "scripting", "tabCapture"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_icon": {
+      "16": "logo192.png",
+      "48": "logo192.png",
+      "128": "logo192.png"
+    }
+  },
+  "icons": {
+    "16": "logo192.png",
+    "48": "logo192.png",
+    "128": "logo192.png"
+  }
+}
