@@ -53,13 +53,13 @@ function App() {
             setCommands((prevCommands) => [...prevCommands, recognizedCommand]);
             executeCommand(recognizedCommand);
           }
-        }, 1500); // Delay of 500ms before finalizing
+        }, 1500); // Delay of 1.5s before finalizing
       }    
     };
 
     recognitionRef.current.onspeechend = () => {
         console.log("Speech has stopped being detected. Restarting...");
-        recognition.stop();
+        recognitionRef.current.stop();
         setTimeout(() => recognitionRef.current.start(), 500);
     };
     
