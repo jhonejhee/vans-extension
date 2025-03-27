@@ -28,8 +28,9 @@ function App() {
     }
 
     recognitionRef.current = new SpeechRecognition();
-    recognitionRef.current.continuous = true;
-    recognitionRef.current.interimResults = true;
+    recognitionRef.current.continuous = false;
+    recognitionRef.current.interimResults = false;
+    recognitionRef.current.maxAlternatives = 1
     recognitionRef.current.lang = 'en-US'; // Set language to English
 
     recognitionRef.current.onresult = (event) => {
@@ -42,26 +43,37 @@ function App() {
       const lastResult = event.results[lastResultIndex];
 
       setTranscript(transcript);
-
+      console.log(lastResult, lastResult.isFinal)
        // Only use finalized speech results
-      if (lastResult.isFinal) {
-        const recognizedCommand = lastResult[0].transcript.trim().toLowerCase();
-
-        if (hasRecognizableWords(recognizedCommand)) {
-          setCommands((prevCommands) => [...prevCommands, recognizedCommand]);
-          executeCommand(recognizedCommand);
-        }
-      }      
+       if (lastResult.isFinal) {
+        setTimeout(() => {
+          const recognizedCommand = lastResult[0].transcript.trim().toLowerCase();
+      
+          if (hasRecognizableWords(recognizedCommand)) {
+            setCommands((prevCommands) => [...prevCommands, recognizedCommand]);
+            executeCommand(recognizedCommand);
+          }
+        }, 1500); // Delay of 500ms before finalizing
+      }    
     };
 
-    recognitionRef.current.onerror = (event) => {
-      console.error('Speech recognition error:', event.error);
-      alert(`Speech recognition error: ${event.error}. Please ensure microphone access is allowed and you have a stable internet connection.`);
+    recognitionRef.current.onspeechend = () => {
+        console.log("Speech has stopped being detected. Restarting...");
+        recognition.stop();
+        setTimeout(() => recognitionRef.current.start(), 500);
     };
-
+    
     recognitionRef.current.onend = () => {
-      console.log("Speech recognition stopped. Restarting...");
-      recognitionRef.current.start(); // Restart automatically
+        console.log("Recognition service disconnected. Restarting...");
+        setTimeout(() => recognitionRef.current.start(), 500);
+    };
+    
+    recognitionRef.current.onerror = (event) => {
+        console.error("Speech recognition error detected: " + event.error);
+        if (event.error === 'no-speech') {
+            console.log("No speech detected. Restarting...");
+            setTimeout(() => recognitionRef.current.start(), 500);
+        }
     };
     
   };
