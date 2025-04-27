@@ -85,7 +85,48 @@ function App() {
       audioContextRef.current = new (window.AudioContext || window.webkitAudioContext)();
       analyserRef.current = audioContextRef.current.createAnalyser();
       const source = audioContextRef.current.createMediaStreamSource(stream);
-      source.connect(analyserRef.current);
+
+      // Add noise gate
+      const noiseGate = audioContextRef.current.createGain();
+      const threshold = -50; // Adjust this value based on your needs (-60 to -40 dB is typical)
+      const attackTime = 0.02;
+      const releaseTime = 0.05;
+
+      source.connect(noiseGate);
+      noiseGate.connect(analyserRef.current);
+
+      // Noise gate processing
+      const bufferSize = 2048;
+      const noiseProcessor = audioContextRef.current.createScriptProcessor(bufferSize, 1, 1);
+      noiseProcessor.onaudioprocess = function(e) {
+        const inputData = e.inputBuffer.getChannelData(0);
+        const outputData = e.outputBuffer.getChannelData(0);
+        
+        // Calculate RMS (Root Mean Square) value
+        let rms = 0;
+        for (let i = 0; i < inputData.length; i++) {
+          rms += inputData[i] * inputData[i];
+        }
+        rms = Math.sqrt(rms / inputData.length);
+        const db = 20 * Math.log10(rms);
+        
+        // Apply noise gate
+        const gain = db < threshold ? 0 : 1;
+        noiseGate.gain.setTargetAtTime(
+          gain,
+          audioContextRef.current.currentTime,
+          gain === 0 ? releaseTime : attackTime
+        );
+        
+        // Copy processed data to output
+        for (let i = 0; i < outputData.length; i++) {
+          outputData[i] = inputData[i];
+        }
+      };
+
+      noiseGate.connect(noiseProcessor);
+      noiseProcessor.connect(audioContextRef.current.destination);
+
       analyserRef.current.fftSize = 32;
 
       const bufferLength = analyserRef.current.frequencyBinCount;

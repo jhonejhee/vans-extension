@@ -9,7 +9,11 @@ export const executeCommand = (command) => {
     console.log(command)
     if (command.includes("vans search for")) {
         const searchItem = command.split("search for")[1].trim();
-        searchInCurrentTab(searchItem);
+        if (!searchItem) {
+            return;
+        }
+        // searchInCurrentTab(searchItem);
+        searchInNewTab(searchItem);
         return;
     }
 
@@ -43,6 +47,11 @@ const searchInCurrentTab = (query) => {
             chrome.tabs.update(tabs[0].id, { url: searchUrl });
         }
     });
+};
+const searchInNewTab = (query) => {
+    speakText(`Searching for ${query}.`)
+    const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}`;
+    chrome.tabs.create({ url: searchUrl }); // Changed to create new tab instead of updating current
 };
 
 // show notification
