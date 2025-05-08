@@ -22,7 +22,9 @@ body {
 .vans-app {
   font-family: Arial, sans-serif;
   color: #333;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
+  background: #ffffff;
+  background: radial-gradient(circle,rgba(255, 255, 255, 1) 0%, rgba(240, 250, 250, 1) 35%, rgba(222, 244, 255, 1) 63%, rgba(217, 229, 255, 1) 100%);
   height: 100dvh;
   width: 100dvw;
 }
