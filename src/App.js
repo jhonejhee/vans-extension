@@ -207,7 +207,7 @@ function App() {
             <div className="vans-tab-content">
               {activeTab === 'voice' && (
                 <div className="vans-voice-tab">
-                  <label htmlFor="microphone-select">Select Microphone</label>
+                  {/* <label htmlFor="microphone-select">Select Microphone</label> */}
                   {/* <select id="microphone-select" className="vans-microphone-select">
                     <option>Microphone (Default)</option>
                     <option>Microphone (External)</option>
