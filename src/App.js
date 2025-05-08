@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { executeCommand } from './commandFunctions';
+import { allCommands, executeCommand } from './commandFunctions';
 import './App.css';
 
 function App() {
   const [transcript, setTranscript] = useState('');
   const [volume, setVolume] = useState(0);
   const [commands, setCommands] = useState([]);
+  const [activeTab, setActiveTab] = useState('voice');
+  const [commandSearch, setCommandSearch] = useState('');
 
   const recognitionRef = useRef(null);
   const audioContextRef = useRef(null);
@@ -64,8 +66,8 @@ function App() {
     };
     
     recognitionRef.current.onend = () => {
-        console.log("Recognition service disconnected. Restarting...");
-        setTimeout(() => recognitionRef.current.start(), 500);
+        // console.log("Recognition service disconnected. Restarting...");
+        // setTimeout(() => recognitionRef.current.start(), 500);
     };
     
     recognitionRef.current.onerror = (event) => {
@@ -172,30 +174,121 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <h1>VANS Voice-Activated Navigation System</h1>
+    <div className="vans-app">
+      <div className="vans-container">
+        <header className="vans-header">
+          <h1 className="vans-title">VANS: Voice-Activated Navigation System</h1>
+          <h3 className="vans-subtitle">
+            Control your navigation with simple voice commands. Speak naturally and watch the system respond.
+          </h3>
+        </header>
 
-      {/* Volume Bar */}
-      <div className="volume-bar">
-        <div
-          className="volume-level"
-          style={{ width: `${volume}%` }}
-        ></div>
-      </div>
+        <div className="vans-main">
+          <div className="vans-control-panel">
+            <div className="vans-control-header">
+              <h2>Voice Control Panel</h2>
+              <p>Use voice commands to control your browser.</p>
+            </div>
+            <div className="vans-tabs">
+              <button
+                className={`vans-tab${activeTab === 'voice' ? ' active' : ''}`}
+                onClick={() => setActiveTab('voice')}
+              >
+                Voice Input
+              </button>
+              <button
+                className={`vans-tab${activeTab === 'commands' ? ' active' : ''}`}
+                onClick={() => setActiveTab('commands')}
+              >
+                Available Commands
+              </button>
+            </div>
 
-      {/* Transcript Textbox */}
-      <textarea
-        className="transcript-box"
-        value={transcript}
-        readOnly
-        placeholder="Speak and your words will appear here..."
-      />
-      
-      {commands.map((command) => (
-        <div key={command} className="command">
-          {command}
+            <div className="vans-tab-content">
+              {activeTab === 'voice' && (
+                <div className="vans-voice-tab">
+                  <label htmlFor="microphone-select">Select Microphone</label>
+                  {/* <select id="microphone-select" className="vans-microphone-select">
+                    <option>Microphone (Default)</option>
+                    <option>Microphone (External)</option>
+                  </select> */}
+
+                  <label>Microphone Volume</label>
+                  <div className="vans-volume-bar">
+                    <div
+                      className="vans-volume-level"
+                      style={{ width: `${volume}%` }}
+                    ></div>
+                  </div>
+
+                  
+                </div>
+              )}
+
+              {activeTab === 'commands' && (
+                <div className="vans-commands-tab">
+                  <input
+                    type="text"
+                    className="vans-command-search"
+                    placeholder="Search commands..."
+                    onChange={(e) => setCommandSearch(e.target.value.toLowerCase())} // Add search functionality
+                  />
+                  <div className="vans-command-list">
+                    {allCommands
+                      .filter((cmd) =>
+                        cmd.name.toLowerCase().includes(commandSearch) || // Filter by name
+                        cmd.description.toLowerCase().includes(commandSearch) // Filter by description
+                      )
+                      .map((cmd, index) => (
+                        <div key={index} className="vans-command-item">
+                          <h4>{cmd.name}</h4>
+                          <p>{cmd.description}</p>
+                          <span className={`vans-command-tag ${cmd.name.toLowerCase().replace(/\s+/g, '-')}`}>
+                            {cmd.command}
+                          </span>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="vans-recognition-panel">
+            <div className="vans-control-header">
+              <h2>Recognition Status</h2>
+              <p>Real-time transcription and status.</p>
+            </div>
+            <div className="vans-transcription">
+              <h4>Current Transcription</h4>
+              <textarea
+                className="vans-transcription-box"
+                value={transcript || ''}
+                readOnly
+              ></textarea>
+            </div>
+            <div className="vans-last-command">
+              <h4>Last Recognized Commands</h4>
+              {commands.length > 0 ? (
+                <ul className="vans-command-history">
+                  {commands.map((cmd, index) => (
+                    <li
+                      key={index}
+                      className={`vans-command-history-item ${
+                        allCommands.some(c => cmd.toLowerCase().startsWith(c.command.toLowerCase())) ? '' : 'unrecognized'
+                      }`}
+                    >
+                    {cmd}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No commands recognized yet</p>
+              )}
+            </div>
+          </div>
         </div>
-      ))}
+      </div>
     </div>
   );
 }

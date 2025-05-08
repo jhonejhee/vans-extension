@@ -9,14 +9,14 @@
   },
   "action": {
     "default_icon": {
-      "16": "logo192.png",
-      "48": "logo192.png",
-      "128": "logo192.png"
+      "16": "logo100.png",
+      "48": "logo100.png",
+      "128": "logo100.png"
     }
   },
   "icons": {
-    "16": "logo192.png",
-    "48": "logo192.png",
-    "128": "logo192.png"
+    "16": "logo100.png",
+    "48": "logo100.png",
+    "128": "logo100.png"
   }
 }

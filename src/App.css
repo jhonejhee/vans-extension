@@ -1,38 +1,322 @@
 .App {
   text-align: center;
-  padding: 20px;
+  padding: 0;
+  margin: 0;
+}
+html{
+  height: 100dvh;
+  width: 100dvw;
 }
 
-.volume-bar {
-  width: 100%;
-  height: 20px;
-  background-color: #e0e0e0;
-  border-radius: 10px;
-  margin: 20px 0;
-  overflow: hidden;
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  sans-serif;
+-webkit-font-smoothing: antialiased;
+-moz-osx-font-smoothing: grayscale;
 }
 
-.volume-level {
+/* General Layout */
+.vans-app {
+  font-family: Arial, sans-serif;
+  color: #333;
+  background-color: #f9f9f9;
+  height: 100dvh;
+  width: 100dvw;
+}
+
+.vans-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
   height: 100%;
-  background-color: #007bff;
-  transition: width 0.1s ease;
 }
 
-.transcript-box {
+.vans-header {
+  text-align: center;
+}
+
+.vans-title {
+  font-size: 2rem;
+  margin: 0;
+}
+
+.vans-subtitle {
+  font-size: 1rem;
+  color: #666;
+}
+
+/* Main Content */
+.vans-main {
+  display: flex;
   width: 100%;
-  height: 150px;
-  margin-top: 20px;
+  gap: 20px;
+}
+
+/* Control Panel */
+.vans-control-panel {
+  flex: 2;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-height: 500px;
+  max-height: 500px;
+}
+
+.vans-control-header {
+  display: flex;
+  height: min-content;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.vans-control-header > * {
+  margin: 0;
+}
+
+.vans-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  background-color: #eee;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.vans-tab {
+  flex: 1;
   padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
+  border-radius: 2px;
+  text-align: center;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  color: #999;
+  transition: background 0.2s, color 0.2s;
+}
+
+.vans-tab.active {
+  background: #fff;
+  color: black;
+}
+
+/* .vans-tab:hover {
+  background: #ececec;
+} */
+
+/* Voice Input Tab */
+.vans-voice-tab label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+.vans-microphone-select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.vans-volume-bar {
+  width: 100%;
+  height: 10px;
+  background: #ddd;
   border-radius: 5px;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.vans-volume-level {
+  height: 100%;
+  background: #1976d2;
+  border-radius: 5px;
+}
+
+.vans-listen-button {
+  width: 100%;
+  padding: 10px;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.vans-listen-button:hover {
+  background: #155a9c;
+}
+
+.vans-listen-instructions {
+  text-align: center;
+  color: #666;
+  margin-top: 10px;
+}
+
+/* Commands Tab */
+.vans-commands-tab {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.vans-command-search {
+  /* width: 100%; */
+  padding: 8px;
+  margin-bottom: 20px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.vans-command-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.vans-command-item {
+  background: #f7f7f7;
+  padding: 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.vans-command-item h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.vans-command-item p {
+  margin: 5px 0 0;
+  color: #666;
+}
+
+.vans-command-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.8rem;
+  color: #fff;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.vans-command-tag.navigation {
+  background: #1976d2;
+}
+
+.vans-command-tag.search {
+  background: #4caf50;
+}
+
+.vans-command-tag.view {
+  background: #ff9800;
+}
+
+/* Recognition Panel */
+.vans-recognition-panel {
+  flex: 1;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  min-height: 500px;
+  max-height: 500px;
+}
+
+.vans-recognition-panel h3 {
+  margin-top: 0;
+}
+
+.vans-control-header {
+  display: flex;
+  height: min-content;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0;
+  margin-bottom: 20px;
+}
+
+.vans-control-header > * {
+  margin: 0;
+}
+
+.vans-transcription {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.vans-transcription-box {
+  height: 100px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 8px;
   resize: none;
 }
 
-.command {
-  margin-bottom: 4px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+.vans-last-command {
+  margin-top: 20px;
+}
+
+.vans-command-tag {
+  display: inline-block;
+  padding: 4px 8px;
+  font-size: 0.8rem;
+  color: #fff;
+  border-radius: 4px;
+  margin-top: 8px;
+  background: #1976d2; /* Default color */
+}
+
+.vans-command-tag.open-tab {
+  background: #4caf50; /* Green for Open Tab */
+}
+
+.vans-command-tag.close-tab {
+  background: #f44336; /* Red for Close Tab */
+}
+
+.vans-command-tag.next-tab {
+  background: #ff9800; /* Orange for Next Tab */
+}
+
+.vans-command-tag.previous-tab {
+  background: #9c27b0; /* Purple for Previous Tab */
+}
+
+.vans-command-tag.search-in-new-tab {
+  background: #03a9f4; /* Blue for Search */
+}
+
+.vans-command-history {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  overflow-y: scroll;
+  height: 180px;
+}
+.vans-command-history-item {
+  background: #f7f7f7;
   padding: 10px;
-  background-color: #f9f9f9;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+  border-left: 4px solid #1976d2;
+}
+
+.vans-command-history-item.unrecognized {
+  border-left: 4px solid #da2a2a;
 }
