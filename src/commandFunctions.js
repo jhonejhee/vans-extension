@@ -87,9 +87,9 @@ export const previousTab = () => {
 export const allCommands = [
     { name: "Open Tab", command: "vans open tab", description: "Open a new tab", function: openTab },
     { name: "Close Tab", command: "vans close tab", description: "Close the current tab", function: closeTab },
+    { name: "Search in New Tab", command: "vans search for", description: "Search for a query in a new tab", function: searchInNewTab },
     { name: "Next Tab", command: "vans next tab", description: "Switch to the next tab", function: nextTab },
     { name: "Previous Tab", command: "vans previous tab", description: "Switch to the previous tab", function: previousTab },
-    { name: "Search in New Tab", command: "vans search for", description: "Search for a query in a new tab", function: searchInNewTab },
 ];
 
 export const executeCommand = (command) => {
