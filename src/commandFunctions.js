@@ -141,5 +141,5 @@ export const executeCommand = (command) => {
         return;
     }
 
-    speakText(`I could not understand the command. Please try again.`, resumeRecognition); // Resume recognition after TTS
+    speakText(`Please try again.`, resumeRecognition); // Resume recognition after TTS
 };
