@@ -2,17 +2,29 @@
 
 
 // Function for text-to-speech
-const speakText = (text) => {
+const speakText = (text, callback) => {
     const synth = window.speechSynthesis;
     if (!synth) {
         console.error("Text-to-speech is not supported in this browser.");
+        if (callback) callback(); // Resume recognition if TTS is not supported
         return;
     }
+
+    // if (!text) {
+    //     // If no text is provided, immediately call the callback
+    //     // if (callback) callback();
+    //     return;
+    // }
 
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = 'en-US'; // Set language to English
     utterance.rate = 1.0; // Adjust speed if needed
     utterance.pitch = 1.0; // Adjust pitch if needed
+
+    utterance.onend = () => {
+        if (callback) callback(); // Resume recognition after TTS finishes
+    };
+
     synth.speak(utterance);
 };
 
@@ -98,21 +110,36 @@ export const executeCommand = (command) => {
 
     const matchedCommand = filteredCommands.find((cmd) => command === cmd.command);
     console.log("Matched Command:", matchedCommand);
+
+    // Pause speech recognition
+    if (window.recognitionRef && window.recognitionRef.current) {
+        window.recognitionRef.current.stop();
+    }
+
+    const resumeRecognition = () => {
+        if (window.recognitionRef && window.recognitionRef.current) {
+            setTimeout(() => window.recognitionRef.current.start(), 500); // Resume after a short delay
+        }
+    };
+
     if (matchedCommand) {
         matchedCommand.function();
         showNotification(command);
-        return;
-    }
-    if (command.includes("vans search for")) {
-        const searchItem = command.split("search for")[1].trim();
-        if (!searchItem) {
-            return;
-        }
-        // searchInCurrentTab(searchItem);
-        searchInNewTab(searchItem);
-        showNotification(command);
+        speakText("", resumeRecognition); // Resume recognition after TTS finishes (even if no TTS is needed)
         return;
     }
 
-    speakText(`I could not understand the command. Please try again.`);
+    if (command.includes("vans search for")) {
+        const searchItem = command.split("search for")[1].trim();
+        if (!searchItem) {
+            resumeRecognition();
+            return;
+        }
+        searchInNewTab(searchItem);
+        showNotification(command);
+        speakText("", resumeRecognition); // Resume recognition after TTS finishes
+        return;
+    }
+
+    speakText(`I could not understand the command. Please try again.`, resumeRecognition); // Resume recognition after TTS
 };

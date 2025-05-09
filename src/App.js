@@ -55,7 +55,7 @@ function App() {
             setCommands((prevCommands) => [...prevCommands, recognizedCommand]);
             executeCommand(recognizedCommand);
           }
-        }, 1500); // Delay of 1.5s before finalizing
+        }, 2000); // Delay of 1.5s before finalizing
       }    
     };
 
@@ -151,25 +151,28 @@ function App() {
   // Initialize microphone and speech recognition when component mounts
   useEffect(() => {
     const initialize = async () => {
-      await initializeAudioContext(); // Ensure microphone access
-      initializeSpeechRecognition(); // Initialize SpeechRecognition
+        await initializeAudioContext(); // Ensure microphone access
+        initializeSpeechRecognition(); // Initialize SpeechRecognition
 
-      // Start speech recognition
-      if (recognitionRef.current) {
-        recognitionRef.current.start();
-      }
+        // Expose recognitionRef globally for commandFunctions.js
+        window.recognitionRef = recognitionRef;
+
+        // Start speech recognition
+        if (recognitionRef.current) {
+            recognitionRef.current.start();
+        }
     };
 
     initialize();
 
     // Cleanup on unmount
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
-      if (audioContextRef.current) {
-        audioContextRef.current.close();
-      }
+        if (recognitionRef.current) {
+            recognitionRef.current.stop();
+        }
+        if (audioContextRef.current) {
+            audioContextRef.current.close();
+        }
     };
   }, []);
 
