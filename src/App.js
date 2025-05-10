@@ -75,16 +75,16 @@ function App() {
     recognitionRef.current.onresult = handleSpeechResult;
 
     recognitionRef.current.onspeechend = () => {
-      console.log('Speech has stopped being detected. Restarting...');
-      recognitionRef.current.stop();
-
-      setTimeout(() => {
-        if (recognitionRef.current && recognitionRef.current.state !== 'running') {
-          console.log("Restarting speech recognition...");
-          console.log("Current listening state:", isListeningRef.current);
-          recognitionRef.current.start();
-        }
-      }, 1000);
+      console.log('Speech has stopped being detected.');
+      try {
+        recognitionRef.current.stop();
+        
+        setTimeout(() => {
+          startSpeechRecognition();
+        }, 500);
+      } catch (error) {
+        console.error('Error in onspeechend:', error);
+      }
     };
 
     recognitionRef.current.onend = () => {
@@ -92,15 +92,32 @@ function App() {
     };
 
     recognitionRef.current.onerror = (event) => {
-      console.error('Speech recognition error detected: ' + event.error);
+      console.error('Speech recognition error detected:', event.error);
       if (event.error === 'no-speech') {
-        console.log('No speech detected. Restarting...');
-        if (recognitionRef.current && recognitionRef.current.state !== 'running') {
-          setTimeout(() => recognitionRef.current.start(), 500);
-        }
+        console.log('No speech detected. Attempting restart...');
+        setTimeout(() => {
+          startSpeechRecognition();
+        }, 500);
       }
     };
   }, [handleSpeechResult]);
+
+  const startSpeechRecognition = () => {
+    try {
+      if (recognitionRef.current && recognitionRef.current.state !== 'running') {
+        console.log('Starting speech recognition...');
+        recognitionRef.current.start();
+      } else {
+        console.log('Speech recognition is already running or not initialized');
+      }
+    } catch (error) {
+      if (error.name === 'InvalidStateError') {
+        console.log('Recognition already started, ignoring...');
+      } else {
+        console.error('Error starting recognition:', error);
+      }
+    }
+  };
 
   const initializeAudioContext = async () => {
     try {
@@ -171,9 +188,7 @@ function App() {
 
         window.recognitionRef = recognitionRef;
 
-        if (recognitionRef.current) {
-            recognitionRef.current.start();
-        }
+        startSpeechRecognition();
     };
 
     initialize();
