@@ -2,7 +2,7 @@
 
 
 // Function for text-to-speech
-const speakText = (text, callback) => {
+export const speakText = (text, callback) => {
     const synth = window.speechSynthesis;
     if (!synth) {
         console.error("Text-to-speech is not supported in this browser.");
@@ -97,11 +97,11 @@ export const previousTab = () => {
 
 
 export const allCommands = [
-    { name: "Open Tab", command: "vans open tab", description: "Open a new tab", function: openTab },
-    { name: "Close Tab", command: "vans close tab", description: "Close the current tab", function: closeTab },
-    { name: "Search in New Tab", command: "vans search for", description: "Search for a query in a new tab", function: searchInNewTab },
-    { name: "Next Tab", command: "vans next tab", description: "Switch to the next tab", function: nextTab },
-    { name: "Previous Tab", command: "vans previous tab", description: "Switch to the previous tab", function: previousTab },
+    { name: "Open Tab", command: "open tab", description: "Open a new tab", function: openTab },
+    { name: "Close Tab", command: "close tab", description: "Close the current tab", function: closeTab },
+    { name: "Search in New Tab", command: "search for", description: "Search for a query in a new tab", function: searchInNewTab },
+    { name: "Next Tab", command: "next tab", description: "Switch to the next tab", function: nextTab },
+    { name: "Previous Tab", command: "previous tab", description: "Switch to the previous tab", function: previousTab },
 ];
 
 export const executeCommand = (command) => {
@@ -129,7 +129,7 @@ export const executeCommand = (command) => {
         return;
     }
 
-    if (command.includes("vans search for")) {
+    if (command.includes("search for")) {
         const searchItem = command.split("search for")[1].trim();
         if (!searchItem) {
             resumeRecognition();
